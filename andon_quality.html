@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Quality Issue</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+      body {
+        background-color: #1c1c1c;
+        color: white;
+        font-family: "Montserrat", sans-serif;
+      }
+      .section-box {
+        background-color: #3b3b3b;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+      .title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 20px 0;
+      }
+      .divider {
+        border-top: 1px solid #666;
+        margin: 10px 0;
+      }
+      .label {
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 10px;
+      }
+      canvas {
+        width: 100% !important;
+        max-height: 250px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid p-4">
+      <div class="title">
+        Daily Quality Issue <span class="text-warning">30th June 2025</span>
+      </div>
+
+      <!-- TOP -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="section-box">
+            <img
+              src="../static/assets/Picture2.png"
+              class="img-fluid rounded mb-3"
+            />
+            <div class="label">Problem Eksternal</div>
+            <div class="divider"></div>
+            <div>Date Issue: <strong>30/06/2025</strong></div>
+            <div>Part Number: <strong>64103-BZ011(D40D)</strong></div>
+            <div>Jumlah: <strong>1 unit</strong></div>
+            <div>Area: <strong>WELDING</strong></div>
+            <div>Problem: <strong>NUT M8 TIDAK ADA</strong></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="section-box">
+            <img
+              src="../static/assets/Picture1.png"
+              class="img-fluid rounded mb-3"
+            />
+            <div class="label">Problem Internal</div>
+            <div class="divider"></div>
+            <div>Date Issue: <strong>29/06/2025</strong></div>
+            <div>Part Number: <strong>57409-BZ240</strong></div>
+            <div>Jumlah: <strong>2 PALLET</strong></div>
+            <div>Area: <strong>LOGISTIC</strong></div>
+            <div>Problem: <strong>PACKING TIDAK STANDARD</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE -->
+      <div class="row">
+        <div class="col-md-4">
+          <div class="section-box text-center">
+            <div class="label">Issue Quality Factor</div>
+            <canvas id="issueQualityChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="section-box text-center">
+            <div class="label">Dept. Quality Issue</div>
+            <canvas id="deptQualityChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="section-box text-center">
+            <div class="label">Problem Factor logistic</div>
+            <canvas id="problemFactorChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="section-box text-center">
+            <div class="label">Summary Case Flowout</div>
+            <canvas id="summaryFlowoutChart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="section-box text-center">
+            <div class="label">Accuracy Information</div>
+            <canvas id="accuracyChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      Chart.register(ChartDataLabels);
+      // ISSUE QUALITY CHART
+      //   new Chart(document.getElementById("issueQualityChart"), {
+      //     type: "doughnut",
+      //     data: {
+      //       labels: ["Internal", "External"],
+      //       datasets: [
+      //         {
+      //           data: [20, 4],
+      //           backgroundColor: ["#e74c3c", "#3498db"],
+      //         },
+      //       ],
+      //     },
+      //     options: {
+      //       plugins: {
+      //         legend: {
+      //           labels: { color: "white" },
+      //         },
+      //       },
+      //     },
+      //   });
+
+      const issueQualityChart = new Chart(
+        document.getElementById("issueQualityChart"),
+        {
+          type: "doughnut",
+          data: {
+            labels: ["Internal", "External"],
+            datasets: [
+              {
+                data: [20, 4],
+                backgroundColor: ["#e74c3c", "#3498db"],
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              legend: {
+                labels: { color: "white" },
+              },
+              datalabels: {
+                color: "#fff",
+                font: {
+                  weight: "bold",
+                  size: 14,
+                },
+                formatter: (value, context) => {
+                  const data = context.chart.data.datasets[0].data;
+                  const total = data.reduce((a, b) => a + b, 0);
+                  const percent = ((value / total) * 100).toFixed(1) + "%";
+                  return percent;
+                },
+              },
+            },
+          },
+          plugins: [ChartDataLabels],
+        }
+      );
+
+      // DEPT. QUALITY ISSUE
+      new Chart(document.getElementById("deptQualityChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["Welding", "Logistic", "Stamping"],
+          datasets: [
+            {
+              data: [6, 12, 6],
+              backgroundColor: ["#f39c12", "#2ecc71", "#2980b9"],
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "white" },
+            },
+            datalabels: {
+              color: "#fff",
+              font: {
+                weight: "bold",
+                size: 14,
+              },
+              formatter: (value, context) => {
+                const data = context.chart.data.datasets[0].data;
+                const total = data.reduce((a, b) => a + b, 0);
+                const percent = ((value / total) * 100).toFixed(1) + "%";
+                return percent;
+              },
+            },
+          },
+        },
+        plugins: [ChartDataLabels],
+      });
+
+      // PROBLEM FACTOR
+      new Chart(document.getElementById("problemFactorChart"), {
+        type: "doughnut",
+        data: {
+          //   labels: ["Appearance", "Completeness", "Strength", "Handling", "Position"],
+          labels: ["Appearance", "Jumping Process"],
+          datasets: [
+            {
+              data: [5, 7],
+              backgroundColor: ["#1abc9c", "#3498db"],
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "white" },
+            },
+            datalabels: {
+              color: "#fff",
+              font: {
+                weight: "bold",
+                size: 14,
+              },
+              formatter: (value, context) => {
+                const data = context.chart.data.datasets[0].data;
+                const total = data.reduce((a, b) => a + b, 0);
+                const percent = ((value / total) * 100).toFixed(1) + "%";
+                return percent;
+              },
+            },
+          },
+        },
+        plugins: [ChartDataLabels],
+      });
+
+      // FLOWOUT CASE CHART
+      new Chart(document.getElementById("summaryFlowoutChart"), {
+        type: "bar",
+        data: {
+          labels: ["Apr", "May", "Jun", "Jul"],
+          datasets: [
+            {
+              label: "Logistic",
+              backgroundColor: "#2ecc71",
+              data: [3, 18, 11, 12],
+            },
+            {
+              label: "Welding",
+              backgroundColor: "#f39c12",
+              data: [11, 25, 35, 6],
+            },
+            {
+              label: "Stamping",
+              backgroundColor: "#2980b9",
+              data: [3, 7, 7, 6],
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "white" },
+            },
+            datalabels: {
+              color: "#fff",
+              font: {
+                weight: "bold",
+                size: 14,
+              },
+              formatter: (value, context) => {
+                const data = context.chart.data.datasets[0].data;
+                const total = data.reduce((a, b) => a + b, 0);
+                const percent = ((value / total) * 100).toFixed(1) + "%";
+                return percent;
+              },
+            },
+          },
+          scales: {
+            x: { ticks: { color: "white" } },
+            y: { ticks: { color: "white" }, beginAtZero: true },
+          },
+        },
+        plugins: [ChartDataLabels],
+      });
+
+      // ACCURACY CHART
+      //   new Chart(document.getElementById("accuracyChart"), {
+      //     type: "bar",
+      //     data: {
+      //       labels: ["< 90%", "90% - 95%", "> 95%"],
+      //       datasets: [
+      //         {
+      //           label: "Accuracy",
+      //           data: [5, 5, 10],
+      //           backgroundColor: ["#e74c3c", "#f39c12", "#2ecc71"],
+      //         },
+      //       ],
+      //     },
+      //     options: {
+      //       plugins: {
+      //         legend: {
+      //           display: false,
+      //         },
+      //       },
+      //       scales: {
+      //         x: { ticks: { color: "white" } },
+      //         y: { ticks: { color: "white" }, beginAtZero: true },
+      //       },
+      //     },
+      //   });
+      new Chart(document.getElementById("accuracyChart"), {
+        type: "bar",
+        data: {
+          labels: ["< 90%", "90% - 95%", "> 95%"],
+          datasets: [
+            {
+              label: "Accuracy",
+              data: [5, 5, 10],
+              backgroundColor: ["#e74c3c", "#f39c12", "#2ecc71"],
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "white" },
+            },
+            datalabels: {
+              color: "#fff",
+              font: {
+                weight: "bold",
+                size: 14,
+              },
+              formatter: (value, context) => {
+                const data = context.chart.data.datasets[0].data;
+                const total = data.reduce((a, b) => a + b, 0);
+                const percent = ((value / total) * 100).toFixed(1) + "%";
+                return percent;
+              },
+            },
+          },
+          scales: {
+            x: { ticks: { color: "white" } },
+            y: { ticks: { color: "white" }, beginAtZero: true },
+          },
+        },
+        plugins: [ChartDataLabels],
+      });
+    </script>
+  </body>
+</html>
